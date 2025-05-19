@@ -7,6 +7,14 @@ const UserModel = {
     return result.rows;
   },
 
+  async getUserById(id) {
+    const result = await db.query(
+      'SELECT id, username FROM users WHERE id = $1', //Выбираем айдишник и юзернейм и потом юзаем это на получении даных
+      [id]
+    );
+    return result.rows[0];
+  },
+
   async findByLogin(login) {
     const result = await db.query(
       'SELECT * FROM users WHERE login = $1',

@@ -5,17 +5,31 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
+
 const pool = require('./db.js');
 const UserModel = require('./models/User.js');
 const { validationResult } = require('express-validator');
 const { registerValidation } = require('./valid/auth');
+const checkAuth = require('./middleware/checkAuth.js');
 
 const app = express();
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-  const users = await UserModel.getAllUsers();
-  res.json(users);
+app.get('/auth/me', checkAuth , async (req, res) => {
+  try{
+    const user = await UserModel.getUserById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+ res.json({
+    message: 'User authenticated successfully',
+    username: user.username, //Здесь мы выводим никнейм полученный через модель
+  });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/auth/login', async (req, res) => {
@@ -27,7 +41,7 @@ try {
   }
   const user = await UserModel.findByLogin(login);
   if (!user) {
-    return res.status(400).json({ message: 'User already exist' });
+    return res.status(400).json({ message: 'User does not exist' });
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) { 
@@ -72,7 +86,6 @@ try {
     const newUser = await UserModel.createUser(username, login, passwordHash);
     const token = jwt.sign(
       { id: newUser.id,
-        login: newUser.login,
        },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
