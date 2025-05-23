@@ -12,95 +12,25 @@ const { validationResult } = require('express-validator');
 const { registerValidation } = require('./valid/auth');
 const checkAuth = require('./middleware/checkAuth.js');
 
+const AuthController = require('./controllers/AuthController.js');
+const DreamsController = require('./controllers/DreamController.js');
+
 const app = express();
 app.use(express.json());
 
-app.get('/auth/me', checkAuth , async (req, res) => {
-  try{
-    const user = await UserModel.getUserById(req.userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+app.get('/auth/me', checkAuth, DreamsController.me);
 
- res.json({
-    message: 'User authenticated successfully',
-    username: user.username, //Здесь мы выводим никнейм полученный через модель
-  });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+app.post('/auth/login', AuthController.login );
 
-app.post('/auth/login', async (req, res) => {
-try {
-  const { login, password } = req.body;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const user = await UserModel.findByLogin(login);
-  if (!user) {
-    return res.status(400).json({ message: 'User does not exist' });
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) { 
-    return res.status(400).json({ message: 'Invalid password' });
-  }
-  const token = jwt.sign(
-    { id: user.id, login: user.login },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-  res.status(200).json({
-    message: 'User logged in successfully',
-    userId: user.id,
-    token: token,
-  });
+app.post('/auth/register', AuthController.register);
 
-} catch (error) {
-  console.error('Error logging in user:', error);
-  res.status(500).json({ message: 'Server error' });
-}
-});
+//app.get('/dreams', checkAuth, DreamsController.getAllDreams);
+//app.get('/dreams/:id', checkAuth, DreamsController.getDreamById);
+app.post('/dreams', checkAuth, DreamsController.createDream);
+// app.delete('/dreams/:id', checkAuth, DreamsController.deleteDream);
+// app.put('/dreams/:id', checkAuth, DreamsController.updateDream);
 
-app.post('/auth/register', registerValidation, async (req, res) => {
-console.log(req.body);
- 
-const errors = validationResult(req);
-if (!errors.isEmpty()) {
-  return res.status(400).json({ errors: errors.array() });
-}
 
-try {
-  const { username, login, password } = req.body;
-
-   const existingUser = await UserModel.findByLogin(login);
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    const salt = await bcrypt.genSalt(11);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const newUser = await UserModel.createUser(username, login, passwordHash);
-    const token = jwt.sign(
-      { id: newUser.id,
-       },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.status(200).json({
-      message: 'User registered successfully',
-      userId: newUser.id,
-      token: token,
-    });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 app.listen(process.env.PORT || 5000, (err) => {
     if (err) {
