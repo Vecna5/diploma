@@ -53,7 +53,7 @@ try {
   }
   const user = await UserModel.findByLogin(login);
   if (!user) {
-    return res.status(400).json({ message: 'User does not exist' });
+    return res.status(404).json({ message: 'User does not exist' });
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) { 

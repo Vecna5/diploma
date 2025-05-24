@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const pool = require('./db.js');
 const UserModel = require('./models/User.js');
 const { validationResult } = require('express-validator');
-const { registerValidation } = require('./valid/auth');
+const { dreamValidation, registerValidation, loginValidation, updateValidation } = require('./valid/auth.js')
 const checkAuth = require('./middleware/checkAuth.js');
 
 const AuthController = require('./controllers/AuthController.js');
@@ -20,15 +20,19 @@ app.use(express.json());
 
 app.get('/auth/me', checkAuth, DreamsController.me);
 
-app.post('/auth/login', AuthController.login );
+app.post('/auth/login',  loginValidation, AuthController.login );
 
-app.post('/auth/register', AuthController.register);
+app.post('/auth/register',  registerValidation ,AuthController.register);
 
-//app.get('/dreams', checkAuth, DreamsController.getAllDreams);
-//app.get('/dreams/:id', checkAuth, DreamsController.getDreamById);
-app.post('/dreams', checkAuth, DreamsController.createDream);
-// app.delete('/dreams/:id', checkAuth, DreamsController.deleteDream);
-// app.put('/dreams/:id', checkAuth, DreamsController.updateDream);
+app.get('/dreams', checkAuth ,DreamsController.getAllDreams);
+
+app.get('/dreams/:id', checkAuth, DreamsController.getDreamById);
+
+app.post('/dreams', checkAuth, dreamValidation ,DreamsController.createDream);
+
+app.delete('/dreams/:id', checkAuth, DreamsController.deleteDream);
+
+app.patch('/dreams/:id', checkAuth, updateValidation, DreamsController.updateDream);
 
 
 
