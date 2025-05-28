@@ -1,0 +1,55 @@
+.header {
+  background: #229799;
+  color: #fff;
+  padding: 24px 0;
+  text-align: center;
+  position: relative;
+}
+.header-content h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+.header-content p {
+  margin: 8px 0 0 0;
+  font-size: 1.1rem;
+}
+
+.site-container {
+  width: 1440px;
+  height: 1796px;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 0 24px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-icon {
+  transition:  opacity 0.4s, transform 0.9s ease;
+  position: absolute;
+  left: 136px;
+  top: 15px;
+  width: 81px;
+  height: 87px;
+}
+
+.header-icon.icon-active {
+  transform: scale(0.92) rotate(-8deg);
+  transition: transform 0.1s;
+}
+
+.header-title {
+  position: absolute;
+  left: 247px;
+  top: 31px;
+  width: 221px;
+  height: 40px;
+  font-family: 'Meera Inimai', 'Meera Inimal', Arial, sans-serif;
+  font-size: 40px;
+  font-weight: normal;
+  color: #444;
+  line-height: 40px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
