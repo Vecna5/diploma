@@ -1,0 +1,26 @@
+.about-section {
+  margin-left: 141px;
+  margin-top: 50px;
+  margin-right: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 544px;
+  height: 646px;
+}
+
+.about-highlight {
+  color: #48CFCB;
+  font-size: 64px;
+  font-family: 'Joan', serif;
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+.about-text p {
+  font-size: 36px;
+  font-family: 'Joan', serif;
+  color: #424242;
+  margin-top: 24px;
+  line-height: 1.5;
+}

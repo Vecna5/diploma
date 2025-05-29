@@ -1,0 +1,38 @@
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  width: 100%;
+}
+
+.header-line {
+  width: 1254px;
+  height: 3px;
+  background-color: #424242;
+  margin-left: 93px;
+
+}
+
+.header-content {
+  color: #424242;
+  font-family: "Joan", serif;
+  font-style: normal;
+  font-size: 64px;
+  width: 431px;
+  height: 329px; 
+  margin-top: 153px;
+  margin-left: 151px;
+  margin-bottom: 52px;
+}
+
+.book-icon {
+  width: 620px;
+  height: 396px;
+  margin-left: 127px;
+  margin-right: 110px;
+  margin-top: 86px;
+  margin-bottom: 51px;
+  background: none;
+  object-fit: contain;
+  filter: drop-shadow(9px 12px 3px rgba(0, 0, 0, 0.25));
+}

@@ -1,31 +1,13 @@
 .header {
   background: #229799;
-  color: #fff;
-  padding: 24px 0;
+  width: 1440px;
+  height: 117px;
   text-align: center;
   position: relative;
 }
-.header-content h1 {
-  margin: 0;
-  font-size: 2.2rem;
-}
-.header-content p {
-  margin: 8px 0 0 0;
-  font-size: 1.1rem;
-}
-
-.site-container {
-  width: 1440px;
-  height: 1796px;
-  margin: 0 auto;
-  background: #fff;
-  box-shadow: 0 0 24px rgba(0,0,0,0.08);
-  position: relative;
-  overflow: hidden;
-}
 
 .header-icon {
-  transition:  opacity 0.4s, transform 0.9s ease;
+   transition: transform 0.3s ease, opacity 0.3s ease;
   position: absolute;
   left: 136px;
   top: 15px;
@@ -33,9 +15,14 @@
   height: 87px;
 }
 
+
+ .header-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
 .header-icon.icon-active {
-  transform: scale(0.92) rotate(-8deg);
-  transition: transform 0.1s;
+  transform: scale(0.95) ;
 }
 
 .header-title {
@@ -44,12 +31,76 @@
   top: 31px;
   width: 221px;
   height: 40px;
-  font-family: 'Meera Inimai', 'Meera Inimal', Arial, sans-serif;
+  font-family: 'Meera Inimai', sans-serif;
+  font-style: regular;
   font-size: 40px;
-  font-weight: normal;
-  color: #444;
-  line-height: 40px;
-  letter-spacing: 0.5px;
+  color: #424242;
   display: flex;
   align-items: center;
+}
+
+.header-buttons {
+  position: absolute;
+  top: 25px;
+  bottom: 25px;
+  right: 142px;
+  display: flex;
+  gap: 24px;
+}
+
+.login-btn {
+  letter-spacing: 0.02em;
+  width: 143px;
+  height: 67px;
+  font-family: 'Meera Inimai', sans-serif;
+  font-style: regular;
+  font-weight: normal;
+  font-size: 32px;
+  padding: 8px 16px;
+  border-radius: 55px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.50s, transform 0.50s;
+}
+
+.register-btn {
+  width : 155px;
+  height: 67px;
+  font-family: 'Meera Inimai', sans-serif;
+  font-style: normal;
+  font-size: 32px;
+  padding: 8px 16px;
+  border-radius: 55px;
+  cursor: pointer;
+  transition: background 0.50s, transform 0.50s;
+}
+
+.login-btn {
+  background-color: #424242;
+  color: white;
+}
+
+.register-btn {
+  background-color: white;
+  color: #424242;
+  border: 3px solid  rgba(96, 91, 91, 81);
+  
+}
+
+.register-btn:hover {
+  background-color: #424242;
+  color: white;
+  border: none;
+}
+
+.login-btn:hover {
+  background-color: white;
+  color: #424242;
+  border: 3px solid rgba(96, 91, 91, 81) ;
+}
+
+.login-btn:active,
+.register-btn:active {
+   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  filter: brightness(0.9);
 }
