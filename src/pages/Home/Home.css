@@ -15,15 +15,16 @@ box-sizing: border-box;
   width: 100wh;
   max-width: 1440px;
   margin: 0 auto; 
-  background-color: #F5F5F5;
+  background-color: var(--home-page-background-color);
 }
 
 .divider {
  width: 3px;
-    background-color: #424242;
+    background-color: var(--divider-background-color);
     margin-top: 30px;
     min-height: 400px;
-    align-self: stretch
+    align-self: stretch;
+    margin-bottom: 30px;
 }
 
 

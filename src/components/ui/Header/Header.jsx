@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import icon from '../../../assets/icons/Sun(black).svg';
-import iconHover from '../../../assets/icons/Moon(white).svg';
+import React from 'react';
+import { useTheme } from '../../../contexts/ThemeContext';
+import sunIcon from '../../../assets/icons/Sun(black).svg';
+import moonIcon from '../../../assets/icons/Moon(white).svg';
 import './Header.css';
 
 const Header = () => {
-  const [active, setActive] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <div className="header-container">
       <header className="header">
         <img
-          src={active ? iconHover : icon}
-          alt="Sun"
-          className={`header-icon${active ? ' icon-active' : ''}`}
-          onMouseDown={() => setActive(true)}
-          onMouseUp={() => setActive(false)}
+          src={isDark ? moonIcon : sunIcon}
+          alt={isDark ? 'Moon' : 'Sun'}
+          className="header-icon"
+          onClick={toggleTheme}
+          style={{ cursor: 'pointer' }}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         />
 
         <span className="header-title">DreamDiary</span>

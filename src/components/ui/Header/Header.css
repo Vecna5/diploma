@@ -34,7 +34,7 @@
   font-family: 'Meera Inimai', sans-serif;
   font-style: regular;
   font-size: 40px;
-  color: #424242;
+  color: var(--header-title-color);
   display: flex;
   align-items: center;
 }

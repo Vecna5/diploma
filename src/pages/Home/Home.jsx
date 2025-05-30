@@ -4,7 +4,9 @@ import DreamerList from '../../components/ui/DreamerList/DreamerList';
 import Footer from '../../components/ui/Footer/Footer';
 import Content from '../../components/ui/Content/Content';
 import About from '../../components/ui/About/About';
+import AnotherSection from '../../components/ui/AnotherSection/AnotherSection';
 import './Home.css';
+import './Theme.css'; // Assuming you have a global theme CSS file
 
 const Home = () => {
   return (
@@ -21,6 +23,7 @@ const Home = () => {
           { name: 'John Doe', count: 1 },
         ]} />
       </main>
+      <AnotherSection />
       <Footer />
     </div>
   );

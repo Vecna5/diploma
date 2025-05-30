@@ -8,13 +8,12 @@
 .header-line {
   width: 1254px;
   height: 3px;
-  background-color: #424242;
+  background-color: var(--header-line-background-color);
   margin-left: 93px;
-
 }
 
 .header-content {
-  color: #424242;
+  color: var(--header-content-color);
   font-family: "Joan", serif;
   font-style: normal;
   font-size: 64px;

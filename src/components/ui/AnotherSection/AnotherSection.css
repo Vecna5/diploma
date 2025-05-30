@@ -1,0 +1,79 @@
+.another-section {
+  background: #229799;
+  padding-bottom: 0;
+}
+
+.another-title {
+  color: #f5f5f5;
+  font-family: 'Joan', serif;
+    font-style: regular;
+  font-size: 64px;
+  text-align: center;
+  padding: 12px 0 8px 0;
+  background: #229799;
+  height: 100px;
+}
+
+.another-cards {
+  display: flex;
+  justify-content: center;
+  gap: 70px;
+  background: var(--dreamer-rank-border-color);
+  padding: 24px 0 16px 0;
+}
+
+.another-card {
+  background: var(--dreamer-rank-border-color);
+  border: 3px solid var(--dreamer-rank-color);
+  border-radius: 35px;
+  width: 573px;
+  height: 177px;
+  padding: 18px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.another-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-family: 'Joan', serif;
+  font-style: regular;
+  font-weight: normal;
+  font-size: 48px;
+  color: var(--dreamer-rank-color);
+  margin-bottom: 18px;
+  margin-left: 40px;
+}
+
+.another-icon {
+  width: 64px;
+  height: 64px;
+  background: #229799;
+  border-radius: 50%;
+  padding: 7px;
+  object-fit: contain;
+  margin-right: 36px;
+}
+
+.another-card-value {
+  background: #229799;
+  color: var(--dreamer-rank-color);
+  font-family: 'Joan', serif;
+font-style: regular;
+  font-weight: normal;
+  font-size: 48px;
+  border-radius: 55px;
+  border: solid 3px var(--dreamer-rank-color);
+  padding: 0px 36px;
+  margin: 0 auto;
+  min-width: 80px;
+  text-align: center;
+}
+
+.another-card-value--wide {
+  min-width: 120px;
+}

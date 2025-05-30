@@ -1,0 +1,31 @@
+body {
+  --header-title-color: #424242; 
+    --home-page-background-color: #f5f5f5;  
+    --header-content-color: #424242; 
+    --header-line-background-color:#424242; 
+    --divider-background-color: #424242; 
+    --about-highlight-color: #48CFCB; 
+    --about-text-p:#424242; 
+    --dreamer-list-title-color: #424242; 
+    --dreamer-stats-background-color: #424242; 
+    --dreamer-item-background-color: #424242; 
+    --dreamer-rank-border-color: #f5f5f5; 
+    --dreamer-rank-color: #424242; 
+
+}
+
+body.dark {
+    --header-title-color: #f5f5f5; 
+        --home-page-background-color: #424242;  
+        --header-content-color: #f5f5f5; 
+        --header-line-background-color:#f5f5f5; 
+        --divider-background-color: #f5f5f5; 
+        --about-highlight-color: #f5f5f5; 
+        --about-text-p:#f5f5f5; 
+        --dreamer-list-title-color: #f5f5f5; 
+        --dreamer-stats-background-color: #f5f5f5; 
+        --dreamer-item-background-color: #f5f5f5; 
+        --dreamer-rank-border-color: #424242; 
+        --dreamer-rank-color: #f5f5f5;
+        
+}

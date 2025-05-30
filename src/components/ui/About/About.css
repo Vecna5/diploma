@@ -10,7 +10,7 @@
 }
 
 .about-highlight {
-  color: #48CFCB;
+  color: var(--about-highlight-color);
   font-size: 64px;
   font-family: 'Joan', serif;
   font-weight: normal;
@@ -20,7 +20,7 @@
 .about-text p {
   font-size: 36px;
   font-family: 'Joan', serif;
-  color: #424242;
+  color: var(--about-text-p);
   margin-top: 24px;
   line-height: 1.5;
 }
