@@ -54,9 +54,10 @@
   height: 64px;
   background: #229799;
   border-radius: 50%;
-  padding: 7px;
+  padding: 4px;
   object-fit: contain;
   margin-right: 36px;
+  border: solid 3px var(--dreamer-rank-color);
 }
 
 .another-card-value {

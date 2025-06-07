@@ -1,0 +1,127 @@
+.login-page {
+  width: 1440px;
+  height: 1024px;
+  margin: 0 auto;
+  background:  #229799;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.error-message {
+  color:#f5f5f5;
+  font-size: 20px;
+  font-family: "Raleway", sans-serif;
+}
+
+.login-icons {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.login-icon {
+  width: 71px;
+  height: 71px;
+  object-fit: contain;
+}
+
+.login-title {
+  font-family: "Meera Inimai", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 103px;
+  color:  #f5f5f5;
+  margin-bottom: 125px;
+  margin-top: 0;
+}
+
+.login-form {
+  margin-bottom: 140px;
+  border-radius: 24px;
+  box-shadow:
+  0 12px 48px 0 rgba(34, 151, 153, 0.45),
+  0 4px 16px 0 rgba(66,66,66,0.30);     
+  padding: 48px 56px 32px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 400px;
+}
+
+
+.login-welcome {
+   font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-style: regular;
+  font-size: 41px;
+  color:  #f5f5f5;
+  margin-bottom: 37px;
+}
+
+.login-input-group {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.login-input-group input {
+  width: 457px;
+  height: 70px;
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  padding: 14px 18px;
+  font-size: 30px;
+  border: 2px solid #f5f5f5;
+  border-radius: 14px;
+  outline: none;
+  background: #424242;
+  color: #f5f5f5;
+  transition: border 0.2s;
+  margin-bottom: 23px;
+}
+
+.login-input-group input:focus {
+  border-color: #424242;
+}
+
+.login-submit {
+  width: 386px;
+  height: 66px;
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-size: 36px;
+  background: #f5f5f5;
+  color: #424242;
+  border: none;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-submit:hover {
+  background: #424242;
+  color:#f5f5f5;
+}
+
+.login-register-text {
+    font-family: "Raleway", sans-serif;
+  margin-top: 26px;
+  font-size: 36px;
+  color: #424242;
+}
+
+.login-register-link {
+  font-family: "Raleway", sans-serif;
+  color: #f5f5f5;
+  font-size: 29px;
+  text-decoration: none;
+  margin-top: 14px;
+  transition: color 0.2s;
+}
+
+.login-register-link:hover {
+  color: #424242;
+}
