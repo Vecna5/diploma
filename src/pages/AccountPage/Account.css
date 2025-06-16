@@ -1,0 +1,147 @@
+
+.account-root {
+  width: 1440px;
+  height: 1024px;
+  margin: 0 auto;
+  background: #229799;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.account-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+}
+
+.account-side--left {
+  left: 139px;
+}
+
+.account-side--right {
+  right: 139px;
+}
+
+.account-checker {
+  width: 18px;
+  height: 18px;
+  margin-bottom: 6px;
+  background: transparent;
+}
+
+.account-checker--dark {
+  background: #424242;
+}
+
+.account-content {
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 40px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.account-header-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.account-header-line {
+    margin-top: 70px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 5px solid var(--home-page-background-color);
+  height: 100vh; 
+  z-index: 1;
+}
+
+.account-header-line--left {
+  left: 358px; 
+}
+
+.account-header-line--right {
+  right: 357px; 
+}
+
+.account-username {
+  flex: 2;
+  margin-bottom: 80px;
+  text-align: center;
+  font-size: 128px;
+  color: var(--header-title-color);
+  font-family: Meera Inimai, sans-serif;
+  font-weight: 500;
+}
+
+.account-info {
+  width: 100%;
+  background: transparent;
+  border-radius: 18px;
+  border: none;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.account-info-line {
+  border-top: 3px solid var(--account-info-line);
+  margin-bottom: 18px;
+}
+
+.account-info-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--header-title-color);
+  font-family: "Meera Inimai", sans-serif;
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.account-moon {
+  width: 215px;
+  height: 215px;
+  background: var(--home-page-background-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px auto;
+  font-size: 60px;
+  color: #f5f5f5;
+}
+
+.account-moon img {
+  width: 157px;
+  height: 157px;
+  display: block;
+}
+
+.account-moon img:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+
+.account-arrow {
+  text-align: center;
+  color: #424242;
+  font-size: 60px;
+  margin-top: 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.account-arrow:hover {
+  color: #f5f5f5;
+}

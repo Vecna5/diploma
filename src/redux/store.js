@@ -1,15 +1,11 @@
-// d:\project\front-end\app\src\redux\store.js
-import { configureStore, createSlice } from '@reduxjs/toolkit';
-
-const dummySlice = createSlice({
-  name: 'dummy',
-  initialState: {},
-  reducers: {}
-});
+import { configureStore } from '@reduxjs/toolkit';
+import  { postsReducer } from './slices/posts.js';
+import  { authReducer } from './slices/auth.js'
 
 const store = configureStore({
   reducer: {
-    dummy: dummySlice.reducer
+    posts: postsReducer,
+    auth: authReducer,
   }
 });
 

@@ -1,6 +1,8 @@
+
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
-
+import axios from '../../utils/axios';
 const mockDreams = [
   { id: 1, title: 'Title of a dream number one', text: 'Dream text 1...' },
   { id: 2, title: 'Title of a dream number two', text: 'Dream text 2...' },

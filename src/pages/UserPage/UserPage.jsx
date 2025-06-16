@@ -1,11 +1,13 @@
-import React from 'react'
+import React , { useState }from 'react'
 import UserHeader from '../../components/ui/Header/UserHeader';
 import DreamCard from '../../components/ui/DreamCard/DreamCard';
 const UserPage = () => {
+    const [searchValue, setSearchValue] = useState('');
+
 return (
     <>
-        <UserHeader />
-        <DreamCard />
+        <UserHeader searchValue={searchValue} setSearchValue={setSearchValue} />
+        <DreamCard searchValue={searchValue}/>
     </>
 );
 }

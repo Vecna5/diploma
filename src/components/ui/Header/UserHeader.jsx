@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './UserHeader.css';
 import opener from '../../../assets/icons/opener.svg';
 import PlusIcon from  '../../../assets/icons/PlusIcon.svg';
 import SearchIcon from  '../../../assets/icons/SearchIcon.svg';
-
-// Если используешь react-router-dom:
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAuthMe } from '../../../redux/slices/auth';
 import { Link } from 'react-router-dom';
 
-const UserHeader = () => {
+const UserHeader = ({ searchValue, setSearchValue }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.data);
+
+  useEffect(() => {
+    dispatch(fetchAuthMe());
+    // eslint-disable-next-line
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    alert(`Ищем: ${searchValue}`);
   };
 
   return (
@@ -37,49 +42,58 @@ const UserHeader = () => {
           >
             <img src={SearchIcon} className="icon-search" alt="Search Icon" />
           </button>
-          {showSearch && (
-            <form className="header-search-form" onSubmit={handleSearch}>
-              <input
-                className="header-search-input"
-                type="text"
-                placeholder="Search by title"
-                value={searchValue}
-                onChange={e => setSearchValue(e.target.value)}
-                autoFocus
-              />
-            </form>
-          )}
+          <form
+            className={`header-search-form${showSearch ? ' open' : ''}`}
+            onSubmit={handleSearch}
+            style={{ marginLeft: 12 }}
+          >
+            <input
+              className="header-search-input"
+              type="text"
+              placeholder="Search by title"
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              autoFocus={showSearch}
+              tabIndex={showSearch ? 0 : -1}
+              style={{ visibility: showSearch ? 'visible' : 'hidden' }}
+            />
+          </form>
         </div>
         <span className="user-header-title">DreamDiary</span>
         <div className="header-right">
-          <span className="username">username</span>
+          <span className="username">{user ? (user.username) : 'Guest'}</span>
         </div>
       </div>
       <div
         className={`sidebar-overlay${sidebarOpen ? ' open' : ''}`}
         onClick={() => setSidebarOpen(false)}
-        style={{ pointerEvents: sidebarOpen ? 'auto' : 'none', opacity: sidebarOpen ? 1 : 0, transition: 'opacity 0.3s' }}
+        style={{
+          pointerEvents: sidebarOpen ? 'auto' : 'none',
+          opacity: sidebarOpen ? 1 : 0,
+          transition: 'opacity 0.3s'
+        }}
       >
         <nav
           className={`sidebar${sidebarOpen ? ' open' : ''}`}
           onClick={e => e.stopPropagation()}
         >
           <div className="sidebar-title">Menu</div>
+          <div className="sidebar-text">Basic</div>
+          <div className="line"></div>
           <ul>
             <li>
               <Link to="/" className="sidebar-link">Main Page</Link>
             </li>
             <li>
-              <Link to="/dreams" className="sidebar-link">Мои сны</Link>
+              <Link to="/dreams" className="sidebar-link">Online</Link>
+            </li>
+            <div className="sidebar-text">Settings</div>
+            <div className="line"></div>
+            <li>
+              <Link to="/account" className="sidebar-link">Account</Link>
             </li>
             <li>
-              <Link to="/profile" className="sidebar-link">Профиль</Link>
-            </li>
-            <li>
-              <Link to="/settings" className="sidebar-link">Настройки</Link>
-            </li>
-            <li>
-              <Link to="/logout" className="sidebar-link">Выход</Link>
+              <Link to="/logout" className="sidebar-link">Log out</Link>
             </li>
           </ul>
         </nav>

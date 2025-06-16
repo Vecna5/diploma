@@ -20,6 +20,19 @@
   display: flex;
   align-items: center;
   margin-right: 16px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  height: 0;
+  overflow: hidden;
+}
+
+.header-search-form.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  height: 48px; 
 }
 
 .header-search-input {
@@ -98,28 +111,46 @@
 }
 
 .sidebar li {
-  font-size: 22px;
-  margin-bottom: 32px;
-  cursor: pointer;
-  transition: color 0.2s;
+    font-family: "Meera Inimai", sans-serif;
+      border-radius: 13px;
+    background-color: #424242;
+    width: 220px;
+    height: 48px;
+    padding: 9px;
+    font-size: 25px;
+    margin-bottom: 32px;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
 .sidebar li:hover {
   color: #229799;
 }
 
+.sidebar-text {
+  font-size: 31px;
+  color: #f5f5f5;
+  margin-top: 65px;
+  font-family: "Meera Inimai", sans-serif;
+}
+
+.line {
+  width: 250px;
+  height: 3px;
+  background: rgba(245, 245, 245, 0.48);
+  margin: 24px -12px;
+}
+
 .sidebar-title {
-  font-size: 38px;
+  font-size: 40px;
   font-family: 'Meera Inimai', sans-serif;
-  font-weight: bold;
-  letter-spacing: 2px;
-  margin-bottom: 36px;
+  margin-bottom: 50px;
   color: #f5f5f5;
   text-align: left;
-  margin-top: 8px;
 }
 
 .sidebar-link {
+  margin-left: 15px;
   color: #f5f5f5;
   text-decoration: none;
   transition: color 0.2s;

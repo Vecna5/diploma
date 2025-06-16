@@ -27,7 +27,7 @@
   border: 3px solid var(--dreamer-rank-color);
   border-radius: 35px;
   width: 573px;
-  height: 177px;
+  height: auto;
   padding: 18px 24px 24px 24px;
   display: flex;
   flex-direction: column;
@@ -76,5 +76,8 @@ font-style: regular;
 }
 
 .another-card-value--wide {
-  min-width: 120px;
+  width: 410px;
+  height: auto;
+   word-break: break-word;
+  overflow-wrap: anywhere;
 }

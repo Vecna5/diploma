@@ -12,9 +12,9 @@ const Register = () => (
     </div>
     <h1 className="login-title">DreamDiary</h1>
     <AuthForm
+      mode="register" 
       welcomeText="Create Account"
       submitLabel="Submit"
-      showConfirm={true} 
       linkText="Already have an account?"
       linkHref="/auth/login"
       linkLabel="Log in"

@@ -11,6 +11,7 @@ body {
     --dreamer-item-background-color: #424242; 
     --dreamer-rank-border-color: #f5f5f5; 
     --dreamer-rank-color: #424242; 
+     --account-info-line: rgba(245, 245, 245, 0.48);
 
 }
 
@@ -27,5 +28,5 @@ body.dark {
         --dreamer-item-background-color: #f5f5f5; 
         --dreamer-rank-border-color: #424242; 
         --dreamer-rank-color: #f5f5f5;
-        
+        --account-info-line: rgba(66, 66, 66, 0.62);
 }

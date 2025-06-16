@@ -6,9 +6,20 @@ import Content from '../../components/ui/Content/Content';
 import About from '../../components/ui/About/About';
 import AnotherSection from '../../components/ui/AnotherSection/AnotherSection';
 import './Home.css';
-import './Theme.css'; // Assuming you have a global theme CSS file
+import './Theme.css'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTop } from '../../redux/slices/posts';
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { items: users, status } = useSelector(state => state.posts);
+
+  React.useEffect(() => {
+    dispatch(fetchTop());
+  }, [dispatch]);
+  
+  const isLoading = status === 'loading';
+
   return (
     <div className="home-page">
       <Header />
@@ -16,12 +27,18 @@ const Home = () => {
       <main className="dream-block">
         <About />
         <div className="divider" />
-        <DreamerList title="Most popular dreamers" items={[
-          { name: 'John Doe', count: 1 },
-          { name: 'John Doe', count: 1 },
-          { name: 'John Doe', count: 1 },
-          { name: 'John Doe', count: 1 },
-        ]} />
+        <DreamerList
+          title="Most popular dreamers"
+          items={
+            isLoading
+              ? []
+              : users.map(user => ({
+                  name: user.username,
+                  count: user.total_likes 
+                }))
+          }
+        />
+        {isLoading && <div>Loading</div>}
       </main>
       <AnotherSection />
       <Footer />

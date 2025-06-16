@@ -1,83 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './DreamCard.css';
 
 import OnlineIcon from '../../../assets/icons/Online.svg';
 import UnOnlineIcon from '../../../assets/icons/UnOnline.svg';
 import likeIcon from '../../../assets/icons/like.svg';
 import dislikeIcon from '../../../assets/icons/dislike.svg';
-import { useNavigate } from 'react-router-dom'; // добавлено
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPostsByUser } from '../../../redux/slices/posts';
 
 const moodColors = {
   Positive: '#229799',
   Neutral: '#D8D7D7',
-  Negative: '#9747FF'
+  Bad: '#9747FF'
 };
 
-const dreams = [
-  { 
-    id: 1, 
-    title: 'Title of a dream number one',
-    date: '28.04.2007',
-    mood: 'Positive',
-    tags: ['tag1', 'tag1' , 'tag4'],
-    timeAgo: '3 days ago',
-    likes: 2,
-    dislikes: 0,
-    isActive: true
-  },
-  { 
-    id: 2, 
-    title: 'Title of a dream number two',
-    date: '15.05.2005',
-    mood: 'Neutral',
-    tags: ['tag2', 'tag2'],
-    timeAgo: '1 week ago',
-    likes: 1,
-    dislikes: 1,
-    isActive: false
-  },
-  { 
-    id: 3, 
-    title: 'Title of a dream number three',
-    date: '20.05.2005',
-    mood: 'Negative',
-    tags: ['tag4', 'tag9'],
-    timeAgo: '2 days ago',
-    likes: 0,
-    dislikes: 3,
-    isActive: true
-  },
-   { 
-    id: 4, 
-    title: 'Title of a dream number three',
-    date: '20.05.2005',
-    mood: 'Negative',
-    tags: ['tag4', 'tag9'],
-    timeAgo: '2 days ago',
-    likes: 0,
-    dislikes: 3,
-    isActive: true
-  },
-   { 
-    id: 6, 
-    title: 'Title of a dream number three',
-    date: '20.05.2005',
-    mood: 'Negative',
-    tags: ['tag4', 'tag9'],
-    timeAgo: '2 days ago',
-    likes: 0,
-    dislikes: 3,
-    isActive: true
-  },
-];
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+}
 
-const DreamCard = () => {
+const DreamCard = ({ searchValue = '' }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.data);
+  const { items: dreams, status } = useSelector(state => state.posts);
+
+  useEffect(() => {
+    if (user && user.id) {
+      dispatch(fetchPostsByUser(user.id));
+    }
+  }, [dispatch, user?.id]);
+
+  // Фильтрация по заголовку
+  const filteredDreams = dreams.filter(dream =>
+    dream.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  if (!user || !user.id) return <div>Loading profile...</div>;
+  if (status === 'loading') return <div>Dreams downloading...</div>;
+  if (status === 'error') return <div>Download error</div>;
+  if (!filteredDreams || filteredDreams.length === 0) return <div className="prikol"><img src="https://i.imgflip.com/3f40bc.jpg?a485928"  alt="No dreams)"></img></div>;
 
   return (
     <div className="dream-cards-outer">
       <div className="dream-cards-row">
-        {dreams.map(dream => (
+        {filteredDreams.map(dream => (
           <div
             className="dream-card"
             key={dream.id}
@@ -90,22 +59,23 @@ const DreamCard = () => {
               <div className="dream-mood-date">
                 <span
                   className="dream-mood-dot"
-                  style={{ backgroundColor: moodColors[dream.mood] }}
+                  style={{ backgroundColor: moodColors[dream.mood] || '#D8D7D7' }}
                   title={dream.mood}
                 />
                 <span className="dream-mood">{dream.mood}</span>
-                <span className="dream-date">{dream.date}</span>
+                <span className="dream-date">{formatDate(dream.created_at)}</span>
               </div>
+              <p className="tags">Tags:</p>
               <div className="dream-tags">
-                {dream.tags.map((tag, index) => (
+                {dream.tags && dream.tags.map((tag, index) => (
                   <span key={index} className="dream-tag">#{tag}</span>
                 ))}
               </div>
               <div className="dream-footer">
-                <span className="dream-active-icon" title={dream.isActive ? "Active" : "Inactive"}>
+                <span className="dream-active-icon" title={dream.is_public ? "Active" : "Inactive"}>
                   <img
-                    src={dream.isActive ? OnlineIcon : UnOnlineIcon}
-                    alt={dream.isActive ? "Active" : "Inactive"}
+                    src={dream.is_public ? OnlineIcon : UnOnlineIcon}
+                    alt={dream.is_public ? "Active" : "Inactive"}
                     className="dream-footer-img"
                   />
                 </span>
@@ -117,7 +87,6 @@ const DreamCard = () => {
                   <img src={dislikeIcon} alt="dislike" className="dream-footer-img" />
                   {dream.dislikes}
                 </span>
-                <span className="dream-time-ago">{dream.timeAgo}</span>
               </div>
             </div>
           </div>

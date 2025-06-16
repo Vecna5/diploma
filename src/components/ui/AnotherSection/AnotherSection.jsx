@@ -1,13 +1,28 @@
 import React from 'react';
 import './AnotherSection.css';
+import { useSelector } from 'react-redux';
 import { useTheme } from '../../../contexts/ThemeContext';
 import humanIcon from '../../../assets/icons/Human(black).svg';
 import randomIcon from '../../../assets/icons/Random(black).svg';
 import humanWhiteIcon from '../../../assets/icons/Human(white).svg';
 import randomWhiteIcon from '../../../assets/icons/Random(white).svg';
+import axios from '../../../utils/axios';
 
 const AnotherSection = () => {
   const { isDark } = useTheme();
+  const dreams = useSelector(state => state.posts.items);
+
+  const [randomDream, setRandomDream] = React.useState(null);
+   const [online, setOnline] = React.useState(null);
+
+  React.useEffect(() => {
+    axios.get('/random')
+      .then(res => setRandomDream(res.data))
+      .catch(() => setRandomDream(null));
+      axios.get('/online')
+      .then(res => setOnline(res.data))
+      .catch(() => setOnline(null));
+  }, []);
 
   return (
     <section className="another-section">
@@ -23,7 +38,7 @@ const AnotherSection = () => {
             />
           </div>
           <div className="another-card-value">
-            34
+            { online ? online.count || 'Empty' : 'Null'}
           </div>
         </div>
         <div className="another-card">
@@ -36,7 +51,7 @@ const AnotherSection = () => {
             />
           </div>
           <div className="another-card-value another-card-value--wide">
-            Title 1
+              {randomDream ? randomDream.title || 'Empty' : 'Null'}
           </div>
         </div>
       </div>
