@@ -20,6 +20,10 @@ const Home = () => {
   
   const isLoading = status === 'loading';
 
+  const usersArray = Array.isArray(users)
+    ? users
+    : users?.users || users?.dreamers || [];
+
   return (
     <div className="home-page">
       <Header />
@@ -32,7 +36,7 @@ const Home = () => {
           items={
             isLoading
               ? []
-              : users.map(user => ({
+              : usersArray.map(user => ({
                   name: user.username,
                   count: user.total_likes 
                 }))

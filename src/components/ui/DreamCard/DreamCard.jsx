@@ -33,10 +33,11 @@ const DreamCard = ({ searchValue = '' }) => {
     }
   }, [dispatch, user?.id]);
 
-  // Фильтрация по заголовку
-  const filteredDreams = dreams.filter(dream =>
+  const filteredDreams = dreams.filter(
+  dream =>
+    typeof dream.title === 'string' &&
     dream.title.toLowerCase().includes(searchValue.toLowerCase())
-  );
+);
 
   if (!user || !user.id) return <div>Loading profile...</div>;
   if (status === 'loading') return <div>Dreams downloading...</div>;

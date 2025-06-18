@@ -16,14 +16,27 @@ const AnotherSection = () => {
    const [online, setOnline] = React.useState(null);
 
   React.useEffect(() => {
-    axios.get('/random')
-      .then(res => setRandomDream(res.data))
-      .catch(() => setRandomDream(null));
-      axios.get('/online')
-      .then(res => setOnline(res.data))
-      .catch(() => setOnline(null));
-  }, []);
+  axios.get('/random')
+    .then(res => {
+      console.log('Random:', res.data); // <--- сюда
+      setRandomDream(res.data);
+    })
+    .catch(err => {
+      console.error('Random error:', err);
+      setRandomDream(null);
+    });
 
+  axios.get('/online')
+    .then(res => {
+      console.log('Online:', res.data); // <--- сюда
+      setOnline(res.data);
+    })
+    .catch(err => {
+      console.error('Online error:', err);
+      setOnline(null);
+    });
+}, []);
+  
   return (
     <section className="another-section">
       <div className="another-title">Another</div>
@@ -38,8 +51,8 @@ const AnotherSection = () => {
             />
           </div>
           <div className="another-card-value">
-            { online ? online.count || 'Empty' : 'Null'}
-          </div>
+  { online ? online.count || 'Empty' : 'Null' }
+</div>
         </div>
         <div className="another-card">
           <div className="another-card-header">
@@ -50,9 +63,10 @@ const AnotherSection = () => {
               className="another-icon"
             />
           </div>
-          <div className="another-card-value another-card-value--wide">
-              {randomDream ? randomDream.title || 'Empty' : 'Null'}
-          </div>
+         <div className="another-card-value another-card-value--wide">
+  { randomDream?.title ?? 'Null' }
+</div>
+
         </div>
       </div>
     </section>
