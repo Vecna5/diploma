@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 const db = require('../db');
-const { getDreamById } = require('../controllers/DreamController');
 
 const DreamModel = {
     async createDream(userId, title, content, tags, mood, isPublic) {
@@ -36,6 +35,38 @@ const DreamModel = {
         }
     },
 
+  async countDreamsByUser(userId) {
+    const result = await db.query(
+        'SELECT COUNT(*) FROM dreams WHERE user_id = $1 AND is_public = true',
+        [userId]
+    );
+    return Number(result.rows[0].count);
+},
+
+async getLastDreamByUser(userId) {
+    const result = await db.query(
+        'SELECT title FROM dreams WHERE user_id = $1 AND is_public = true ORDER BY created_at DESC LIMIT 1',
+        [userId]
+    );
+    return result.rows[0];
+},
+
+async getOneDreamById(dreamId, userId) {
+    const result = await db.query(
+        'SELECT * FROM dreams WHERE id = $1 AND user_id = $2',
+        [dreamId, userId]
+    );
+    return result.rows[0];
+},
+
+async getTotalLikesByUser(userId) {
+    const result = await db.query(
+        'SELECT COALESCE(SUM(likes), 0) AS total_likes FROM dreams WHERE user_id = $1',
+        [userId]
+    );
+    return Number(result.rows[0].total_likes);
+},
+
     async getAllDreams() {
         try {
             const result = await db.query('SELECT * FROM dreams ORDER BY created_at DESC');
@@ -46,12 +77,12 @@ const DreamModel = {
         }
     },
 
-    async getDreamById(dreamId , userId) {
+    async getDreamById(userId) {
         try {
-            const result = await db.query('SELECT * FROM dreams WHERE id = $1 AND user_id = $2',
-                [dreamId, userId]
+            const result = await db.query('SELECT * FROM dreams WHERE user_id = $1',
+                [userId]
             );
-            return result.rows[0]; //Возвращаем первый елемент масива
+            return result.rows; 
         } catch (error) {
           console.error('Error in DreamModel.getDreamById:', error);
             throw error;
@@ -93,6 +124,15 @@ const DreamModel = {
             throw error;
         }
     },
+
+    async randomDream() {
+        try {const result = await db.query('SELECT title FROM dreams WHERE is_public = true ORDER BY RANDOM() LIMIT 1')
+return result.rows[0];
+        } catch (error) {
+             console.error('Error in DreamModel.randomDream:', error);
+            throw error;
+        }
+    }
 };
 
 module.exports = DreamModel;
