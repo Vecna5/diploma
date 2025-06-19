@@ -32,8 +32,8 @@ const UserHeader = ({ searchValue, setSearchValue }) => {
           >
             <img src={opener} className="icon-opener" alt="opener Icon" />
           </button>
-          <button className="icon-btn">
-            <img src={PlusIcon} className="icon-add" alt="Plus Icon" />
+          <button className="icon-btn" >
+            <Link to = "/create"><img src={PlusIcon} className="icon-add" alt="Plus Icon" /></Link>
           </button>
           <button
             className="icon-btn"
@@ -85,7 +85,7 @@ const UserHeader = ({ searchValue, setSearchValue }) => {
               <Link to="/" className="sidebar-link">Main Page</Link>
             </li>
             <li>
-              <Link to="/dreams" className="sidebar-link">Online</Link>
+              <Link to="/online" className="sidebar-link">Online</Link>
             </li>
             <div className="sidebar-text">Settings</div>
             <div className="line"></div>

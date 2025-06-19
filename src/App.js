@@ -9,6 +9,9 @@ import Register from './pages/Register/Register';
 import UserPage from './pages/UserPage/UserPage';
 import FullDream from './pages/DreamPage/FullDream';
 import Account from './pages/AccountPage/Account';
+import CreateDream from './pages/CreateDream/CreateDream';
+import OnlineSection from './pages/Online/OnlineSection';
+import PublicDream from './pages/Online/PublicDream';
 
 function App() {
    const dispatch = useDispatch();
@@ -24,6 +27,9 @@ function App() {
       <Route path="/dreams" element={<UserPage />} />
       <Route path="/dreams/:id" element={<FullDream />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/create" element={<CreateDream />} />
+      <Route path="/online" element={<OnlineSection />} />
+      <Route path="/public-dream/:id" element={<PublicDream />} />
     </Routes>
   );
 }

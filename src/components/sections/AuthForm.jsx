@@ -58,7 +58,6 @@ const AuthForm = ({
       if (thunk.fulfilled.match(result)) {
         if (result.payload.token) {
           localStorage.setItem('token', result.payload.token);
-          // Сразу после логина/регистрации получаем профиль пользователя
           await dispatch(fetchAuthMe());
         }
         reset();
