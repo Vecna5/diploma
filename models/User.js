@@ -10,7 +10,7 @@ const UserModel = {
 
   async getUserById(id) {
     const result = await db.query(
-      'SELECT id, username , created_at , last_activity FROM users WHERE id = $1', //Выбираем айдишник и юзернейм и потом юзаем это на получении даных
+      'SELECT id, username , created_at , last_activity FROM users WHERE id = $1', 
       [id]
     );
     return result.rows[0];

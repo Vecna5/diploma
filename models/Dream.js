@@ -69,7 +69,7 @@ async getTotalLikesByUser(userId) {
 
     async getAllDreams() {
         try {
-            const result = await db.query('SELECT * FROM dreams ORDER BY created_at DESC');
+            const result = await db.query('SELECT * FROM dreams WHERE is_public = true ORDER BY created_at DESC');
             return result.rows;
         } catch (error) {
             console.error('Error in DreamModel.getAllDreams:', error);
@@ -124,7 +124,48 @@ async getTotalLikesByUser(userId) {
             throw error;
         }
     },
-
+ async likeDream(dreamId, userId, type) {
+        const check = await db.query(
+            'SELECT * FROM dream_likes WHERE user_id = $1 AND dream_id = $2',
+            [userId, dreamId]
+        );
+        if (check.rows.length > 0) {
+            if (check.rows[0].type === type) {
+                return;
+            }
+            await db.query(
+                'UPDATE dream_likes SET type = $1 WHERE user_id = $2 AND dream_id = $3',
+                [type, userId, dreamId]
+            );
+            if (type === 'like') {
+                await db.query(
+                    'UPDATE dreams SET likes = likes + 1, dislikes = dislikes - 1 WHERE id = $1',
+                    [dreamId]
+                );
+            } else {
+                await db.query(
+                    'UPDATE dreams SET dislikes = dislikes + 1, likes = likes - 1 WHERE id = $1',
+                    [dreamId]
+                );
+            }
+        } else {
+            await db.query(
+                'INSERT INTO dream_likes (user_id, dream_id, type) VALUES ($1, $2, $3)',
+                [userId, dreamId, type]
+            );
+            if (type === 'like') {
+                await db.query(
+                    'UPDATE dreams SET likes = likes + 1 WHERE id = $1',
+                    [dreamId]
+                );
+            } else {
+                await db.query(
+                    'UPDATE dreams SET dislikes = dislikes + 1 WHERE id = $1',
+                    [dreamId]
+                );
+            }
+        }
+    },
     async randomDream() {
         try {const result = await db.query('SELECT title FROM dreams WHERE is_public = true ORDER BY RANDOM() LIMIT 1')
 return result.rows[0];
@@ -132,7 +173,14 @@ return result.rows[0];
              console.error('Error in DreamModel.randomDream:', error);
             throw error;
         }
-    }
+    },
+async getPublicDreamById(dreamId) {
+    const result = await db.query(
+        'SELECT title, content FROM dreams WHERE id = $1 AND is_public = true',
+        [dreamId]
+    );
+    return result.rows[0];
+},
 };
 
 module.exports = DreamModel;

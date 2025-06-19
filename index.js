@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit');
 
 const pool = require('./db.js');
 const UserModel = require('./models/User.js');
+const DreamModel = require('./models/Dream.js');
 const ImageModel = require('./models/Image.js');
 const { validationResult } = require('express-validator');
 const { dreamValidation, registerValidation, loginValidation, updateValidation } = require('./valid/auth.js')
@@ -27,10 +28,10 @@ const app = express();
 
 const storage = multer.diskStorage({
   destination: (req, _, cb) => {
-    cb(null, 'uploads');                // Указываем какую директорию используем как хранилище
+    cb(null, 'uploads');                
   },
   filename: (__, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Обьясняем как сохранять и как будет называться файл
+    cb(null, Date.now() + '-' + file.originalname); 
   }
 });
 
@@ -40,13 +41,13 @@ const limiter = rateLimit({
   message: { message: 'Too much bro)' }
 });
 
-const upload = multer({ storage }); // Даём експрессу знать, что мы используем multer и storage
+const upload = multer({ storage }); 
 
 app.use(express.json());
 app.use(cors());
 app.use(limiter); 
 
-app.use('/uploads', express.static('uploads')); // Даём ексрпессу знать где храняться статические файлы чтоб можно было делать запросы к ним
+app.use('/uploads', express.static('uploads')); 
 app.get('/top', RatingController.top);
 app.get('/random', RatingController.random);
 app.get('/online', RatingController.online)
@@ -101,7 +102,31 @@ app.get('/dream/:id', checkAuth, updateOnline, DreamsController.getOneDreamById)
 app.post('/dreams', checkAuth, updateOnline , dreamValidation , handleValidationErrors, DreamsController.createDream);
 app.delete('/dreams/:id', checkAuth,updateOnline, DreamsController.deleteDream);
 app.patch('/dreams/:id', checkAuth, updateOnline, updateValidation, handleValidationErrors, DreamsController.updateDream);
+app.get('/public-dream/:id', checkAuth, updateOnline, DreamsController.getPublicDreamById);
 
+app.post('/dreams/:id/like', checkAuth, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+    await DreamModel.likeDream(id, userId, 'like');
+    res.json({ message: 'Liked' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/dreams/:id/dislike', checkAuth, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+    await DreamModel.likeDream(id, userId, 'dislike');
+    res.json({ message: 'Disliked' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error',
+      error: error.message
+     });
+  }
+});
 
 
 app.listen(process.env.PORT || 5000, (err) => {

@@ -83,6 +83,25 @@ exports.getOneDreamById = async (req, res) => {
   }
 };
 
+exports.getPublicDreamById = async (req, res) => {
+  try {
+    const dreamId = req.params.id;
+    const dream = await DreamModel.getPublicDreamById(dreamId);
+
+    if (!dream) {
+      return res.status(404).json({ message: 'Dream not found or not public' });
+    }
+
+    res.status(200).json({
+      success: true,
+      dream
+    });
+  } catch (error) {
+    console.error('Error getting public dream by id:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.getAllDreams = async (req, res) => {
   try{
 const userId = req.userId;
@@ -142,7 +161,6 @@ exports.deleteDream = async (req, res) => {
   }
 }
 
-// ...existing code...
 exports.updateDream = async (req, res) => {
   try {
     const userId = req.userId;
@@ -154,7 +172,6 @@ exports.updateDream = async (req, res) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    // Получаем текущий сон
     const currentDream = await DreamModel.getOneDreamById(id, userId);
     if (!currentDream) {
       return res.status(404).json({
@@ -163,7 +180,6 @@ exports.updateDream = async (req, res) => {
       });
     }
 
-    // Подставляем старые значения, если новые не пришли
     title = typeof title !== 'undefined' ? title : currentDream.title;
     content = typeof content !== 'undefined' ? content : currentDream.content;
     tags = typeof tags !== 'undefined' ? tags : currentDream.tags;
