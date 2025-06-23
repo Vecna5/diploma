@@ -14,6 +14,7 @@ import axios from '../../utils/axios';
 
 const FullDream = () => {
   const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -46,44 +47,52 @@ const FullDream = () => {
     dispatch(fetchDreamById(id));
   }, [dispatch, id]);
 
- useEffect(() => {
+  // Прогресс и длительность аудио
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     const updateProgress = () => setProgress(audio.currentTime);
+    const setAudioDuration = () => setDuration(audio.duration || 0);
+    const resetProgress = () => setProgress(0);
+
     audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('ended', () => setProgress(0));
+    audio.addEventListener('loadedmetadata', setAudioDuration);
+    audio.addEventListener('ended', resetProgress);
+
     return () => {
       audio.removeEventListener('timeupdate', updateProgress);
-      audio.removeEventListener('ended', () => setProgress(0));
+      audio.removeEventListener('loadedmetadata', setAudioDuration);
+      audio.removeEventListener('ended', resetProgress);
     };
   }, [audioUrl]);
 
-useEffect(() => {
-  const fetchMusic = async () => {
-    try {
-      const { data } = await axios.get(`/music/${id}`);
-      if (data.music && data.music.length > 0) {
-        setAudioUrl(
-          'http://localhost:5000' +
-          data.music[0].url.replace('/music_uploads/', '/music-uploads/')
-        );
-      } else {
+  useEffect(() => {
+    const fetchMusic = async () => {
+      try {
+        const { data } = await axios.get(`/music/${id}`);
+        if (data.music && data.music.length > 0) {
+          setAudioUrl(
+            'http://localhost:5000' +
+            data.music[0].url.replace('/music_uploads/', '/music-uploads/')
+          );
+        } else {
+          setAudioUrl('');
+        }
+      } catch (e) {
         setAudioUrl('');
       }
-    } catch (e) {
-      setAudioUrl('');
-    }
-  };
-  fetchMusic();
-}, [id]);
- const handleUploadMusic = () => {
+    };
+    fetchMusic();
+  }, [id]);
+
+  const handleUploadMusic = () => {
     if (uploadInputRef.current) {
       uploadInputRef.current.value = '';
       uploadInputRef.current.click();
     }
   };
 
- const handleMusicFileChange = async (e) => {
+  const handleMusicFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const formData = new FormData();
@@ -95,7 +104,6 @@ useEffect(() => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
       window.location.reload();
     } catch (err) {
       alert('Ошибка при загрузке музыки');
@@ -150,9 +158,9 @@ useEffect(() => {
     setRedoStack([]);
   };
 
-const handleDeleteLastImage = () => {
-  dispatch(deleteLastDreamImage(id));
-};
+  const handleDeleteLastImage = () => {
+    dispatch(deleteLastDreamImage(id));
+  };
 
   const handleUndo = () => {
     setUndoStack(prev => {
@@ -218,21 +226,35 @@ const handleDeleteLastImage = () => {
     setIsEditingTitle(false);
   };
 
+  // Перемотка назад на 5 секунд
+  const handleRewind = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 5);
+    }
+  };
+
+  // Перемотка вперёд на 5 секунд
+  const handleForward = () => {
+    if (audioRef.current && audioRef.current.duration) {
+      audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + 5);
+    }
+  };
+
   if (!dream) return <div className="full-dream-loading">Loading...</div>;
 
   return (
     <div className="full-dream-root">
       <div className="full-dream-toolbar-grid">
         <div className="toolbar-cell toolbar-topleft">
-           <button className="toolbar-btn cross-btn" onClick={() => navigate('/dreams')}>
+          <button className="toolbar-btn cross-btn" onClick={() => navigate('/dreams')}>
             <img src={cross} alt="Close" className="toolbar-icon" />
-             <div className="toolbar-divider-vertical" />
+            <div className="toolbar-divider-vertical" />
           </button>
           <div className="toolbar-title">
-          <button className="toolbar-btn" onClick={fetchImages}>
-            <img className="image-icon" src={image} alt='icon' />
-          </button>
-          <button
+            <button className="toolbar-btn" onClick={fetchImages}>
+              <img className="image-icon" src={image} alt='icon' />
+            </button>
+            <button
               className="toolbar-btn"
               onClick={() => fileInputRef.current.click()}
               type="button"
@@ -249,7 +271,7 @@ const handleDeleteLastImage = () => {
               onChange={handleImageUpload}
             />
             <button className="delete-btn" onClick={handleDeleteLastImage}><img src={trash} alt="trash button"></img></button>
-            </div>
+          </div>
         </div>
         <div className="toolbar-cell toolbar-topright">
           <div className="toolbar-tags">
@@ -298,39 +320,45 @@ const handleDeleteLastImage = () => {
           </span>
         </div>
         <div className="toolbar-cell toolbar-bottomright">
-      <div className="toolbar-player">
-          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.currentTime > 5 ? (audioRef.current.currentTime -= 5) : null}>&#9198;</button>
-          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.play()}>&#9654;</button>
-          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.pause()}>&#9208;</button>
-          <input
-            type="range"
-            className="toolbar-player-range"
-            min={0}
-            max={audioRef.current && audioRef.current.duration ? audioRef.current.duration : 0}
-            value={progress}
-            readOnly
-          />
- <button
-        className="toolbar-player-btn"
-        onClick={handleUploadMusic}
-      >
-        +
-      </button>
-       <input
-        type="file"
-        accept="audio/*"
-        style={{ display: 'none' }}
-        ref={uploadInputRef}
-        onChange={handleMusicFileChange}
-      />
-        <button className="toolbar-player-btn toolbar-trash-btn" onClick={handleDeleteMusic}>
-  <img src={trash} alt='trash_btn' />
-</button>
+          <div className="toolbar-player">
+            <button className="toolbar-player-btn" onClick={handleRewind}>&#9198;</button>
+            <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.play()}>&#9654;</button>
+            <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.pause()}>&#9208;</button>
+           <input
+  type="range"
+  className="toolbar-player-range"
+  min={0}
+  max={duration}
+  value={progress}
+  readOnly
+/>
+            <button
+              className="toolbar-player-btn"
+              onClick={handleForward}
+            >
+              +
+            </button>
+            <button className="toolbar-player-btn toolbar-trash-btn" onClick={handleDeleteMusic}>
+              <img src={trash} alt='trash_btn' />
+            </button>
+            <button
+              className="toolbar-player-btn"
+              onClick={handleUploadMusic}
+            >
+              <span style={{ fontWeight: 'bold' }}>⭳</span>
+            </button>
+            <input
+              type="file"
+              accept="audio/*"
+              style={{ display: 'none' }}
+              ref={uploadInputRef}
+              onChange={handleMusicFileChange}
+            />
+          </div>
+          {audioUrl && (
+            <audio ref={audioRef} src={audioUrl} preload="auto" />
+          )}
         </div>
-        {audioUrl && (
-          <audio ref={audioRef} src={audioUrl} preload="auto" />
-        )}
-      </div>
       </div>
       <div
         className={`full-dream-title${isEditingTitle ? ' editing' : ''}`}
@@ -373,28 +401,28 @@ const handleDeleteLastImage = () => {
             className="images-container"
             onClick={e => e.stopPropagation()}
           >
-          <div className="images-list">
-  {images.length === 0 && <div>You don't have images</div>}
-  {images.map((img, idx) => (
-    <a
-      key={idx}
-      href={`http://localhost:5000${img.url}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ display: 'inline-block' }}
-    >
-      <img
-        src={`http://localhost:5000${img.url}`}
-        alt={`dream-img-${idx}`}
-        style={{ width: 300, height: 300, objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
-      />
-    </a>
-  ))}
-</div>
+            <div className="images-list">
+              {images.length === 0 && <div>You don't have images</div>}
+              {images.map((img, idx) => (
+                <a
+                  key={idx}
+                  href={`http://localhost:5000${img.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block' }}
+                >
+                  <img
+                    src={`http://localhost:5000${img.url}`}
+                    alt={`dream-img-${idx}`}
+                    style={{ width: 300, height: 300, objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
+                  />
+                </a>
+              ))}
+            </div>
           </div>
-            <button className="images-close-btn" onClick={() => setShowImages(false)}>
-              &gt;
-            </button>
+          <button className="images-close-btn" onClick={() => setShowImages(false)}>
+            &gt;
+          </button>
         </div>
       )}
     </div>

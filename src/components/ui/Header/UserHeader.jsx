@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './UserHeader.css';
+import { useTheme } from '../../../contexts/ThemeContext';
 import opener from '../../../assets/icons/opener.svg';
+import openerblack from '../../../assets/icons/opener(black).svg';
 import PlusIcon from  '../../../assets/icons/PlusIcon.svg';
+import PlusIconBlack from  '../../../assets/icons/cross(black).svg';
 import SearchIcon from  '../../../assets/icons/SearchIcon.svg';
+import Searchblack from  '../../../assets/icons/Search(black).svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAuthMe } from '../../../redux/slices/auth';
 import { Link } from 'react-router-dom';
 
 const UserHeader = ({ searchValue, setSearchValue }) => {
+  const { isDark } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const dispatch = useDispatch();
@@ -22,6 +27,10 @@ const UserHeader = ({ searchValue, setSearchValue }) => {
     e.preventDefault();
   };
 
+  const openerIcon = isDark ? opener : openerblack;
+  const plusIcon = isDark ? PlusIcon : PlusIconBlack;
+  const searchIcon = isDark ? SearchIcon : Searchblack;
+
   return (
     <>
       <div className="app-header">
@@ -30,17 +39,19 @@ const UserHeader = ({ searchValue, setSearchValue }) => {
             className="icon-btn"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            <img src={opener} className="icon-opener" alt="opener Icon" />
+            <img src={openerIcon} className="icon-opener" alt="opener Icon" />
           </button>
           <button className="icon-btn" >
-            <Link to = "/create"><img src={PlusIcon} className="icon-add" alt="Plus Icon" /></Link>
+            <Link to="/create">
+              <img src={plusIcon} className="icon-add" alt="Plus Icon" />
+            </Link>
           </button>
           <button
             className="icon-btn"
             onClick={() => setShowSearch(s => !s)}
             style={{ marginLeft: 8 }}
           >
-            <img src={SearchIcon} className="icon-search" alt="Search Icon" />
+            <img src={searchIcon} className="icon-search" alt="Search Icon" />
           </button>
           <form
             className={`header-search-form${showSearch ? ' open' : ''}`}

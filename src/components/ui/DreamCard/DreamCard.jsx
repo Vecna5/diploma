@@ -10,6 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchPostsByUser } from '../../../redux/slices/posts';
 import { Link } from 'react-router-dom';
 import trash from '../../../assets/icons/trash.svg';
+import likeblack from '../../../assets/icons/like(black).svg';
+import dislikeblack from '../../../assets/icons/dislike(black).svg';
+import OnlineBlack from '../../../assets/icons/Online(black).svg';
+import UnOnlineBlack from '../../../assets/icons/UnOnline(black).svg';
+
+import { useTheme } from '../../../contexts/ThemeContext';
 import axios from '../../../utils/axios';
 
 const moodColors = {
@@ -25,12 +31,13 @@ function formatDate(dateStr) {
 }
 
 const DreamCard = ({ searchValue = '' }) => {
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.data);
   const { items: dreams, status } = useSelector(state => state.posts);
 
- const handleDeleteDream = async (dreamId, e) => {
+  const handleDeleteDream = async (dreamId, e) => {
     e.stopPropagation(); 
     try {
       await axios.delete(`/dreams/${dreamId}`);
@@ -47,15 +54,23 @@ const DreamCard = ({ searchValue = '' }) => {
   }, [dispatch, user?.id]);
 
   const filteredDreams = dreams.filter(
-  dream =>
-    typeof dream.title === 'string' &&
-    dream.title.toLowerCase().includes(searchValue.toLowerCase())
-);
+    dream =>
+      typeof dream.title === 'string' &&
+      dream.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   if (!user || !user.id) return <div>Loading profile...</div>;
   if (status === 'loading') return <div>Dreams downloading...</div>;
   if (status === 'error') return <div>Download error</div>;
   if (!filteredDreams || filteredDreams.length === 0) return <div className="prikol"><img src="https://i.imgflip.com/3f40bc.jpg?a485928"  alt="No dreams)"></img></div>;
+
+  // Выбор иконок по теме
+  const getOnlineIcon = (isPublic) => isDark
+    ? (isPublic ? OnlineIcon : UnOnlineIcon)
+    : (isPublic ? OnlineBlack : UnOnlineBlack);
+
+  const getLikeIcon = () => isDark ? likeIcon : likeblack;
+  const getDislikeIcon = () => isDark ? dislikeIcon : dislikeblack;
 
   return (
     <div className="dream-cards-outer">
@@ -96,17 +111,17 @@ const DreamCard = ({ searchValue = '' }) => {
               <div className="dream-footer">
                 <span className="dream-active-icon" title={dream.is_public ? "Active" : "Inactive"}>
                   <img
-                    src={dream.is_public ? OnlineIcon : UnOnlineIcon}
+                    src={getOnlineIcon(dream.is_public)}
                     alt={dream.is_public ? "Active" : "Inactive"}
                     className="dream-footer-img"
                   />
                 </span>
                 <span className="dream-like">
-                  <img src={likeIcon} alt="like" className="dream-footer-img" />
+                  <img src={getLikeIcon()} alt="like" className="dream-footer-img" />
                   {dream.likes}
                 </span>
                 <span className="dream-dislike">
-                  <img src={dislikeIcon} alt="dislike" className="dream-footer-img" />
+                  <img src={getDislikeIcon()} alt="dislike" className="dream-footer-img" />
                   {dream.dislikes}
                 </span>
               </div>
@@ -114,7 +129,7 @@ const DreamCard = ({ searchValue = '' }) => {
           </div>
         ))}
         <div className="dream-card add-card" >
-        <Link to="/create" className="plus">+</Link>
+          <Link to="/create" className="plus">+</Link>
         </div>
       </div>
     </div>

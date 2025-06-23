@@ -97,13 +97,6 @@ const OnlineSection = () => {
               onChange={e => setSearchValue(e.target.value)}
               autoFocus
             />
-            <button
-              className="icon-btn"
-              type="submit"
-              style={{ marginLeft: 5 }}
-            >
-              <img src={SearchIcon} className="icon-search" alt="Search Icon" />
-            </button>
           </form>
         </div>
         <span className="user-header-title">DreamDiary</span>
