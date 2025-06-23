@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors')
 const rateLimit = require('express-rate-limit');
 
+const path = require('path');
 const pool = require('./db.js');
 const UserModel = require('./models/User.js');
 const DreamModel = require('./models/Dream.js');
@@ -28,10 +29,31 @@ const app = express();
 
 const storage = multer.diskStorage({
   destination: (req, _, cb) => {
-    cb(null, 'uploads');                
+    cb(null, 'img');                
   },
   filename: (__, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname); 
+  }
+});
+
+const musicStorage = multer.diskStorage({
+  destination: (req, _, cb) => {
+    cb(null, 'music-uploads');                
+  },
+  filename: (__, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); 
+  }
+});
+
+const musicUpload = multer({
+  storage: musicStorage,
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '.mp3' || ext === '.wav' || ext === '.ogg') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only audio files are allowed!'));
+    }
   }
 });
 
@@ -47,7 +69,8 @@ app.use(express.json());
 app.use(cors());
 app.use(limiter); 
 
-app.use('/uploads', express.static('uploads')); 
+app.use('/uploads', express.static('img')); 
+app.use('/music-uploads', express.static('music-uploads'));
 app.get('/top', RatingController.top);
 app.get('/random', RatingController.random);
 app.get('/online', RatingController.online)
@@ -76,6 +99,15 @@ app.post('/upload', checkAuth, upload.array('image', 4), async (req, res) => {
   res.json({ urls });
 });
 
+app.get('/music/:dreamId', checkAuth, async (req, res) => {
+  const { dreamId } = req.params;
+  const result = await pool.query(
+    'SELECT id, url FROM music WHERE dream_id = $1 ORDER BY created_at ASC',
+    [dreamId]
+  );
+  res.json({ music: result.rows });
+});
+
 app.get('/images/:dreamId', checkAuth, async (req, res) => {
   try {
     const { dreamId } = req.params;
@@ -93,6 +125,60 @@ app.delete('/images/last/:dreamId', checkAuth, async (req, res) => {
     res.json({ message: 'Last image deleted', deletedId });
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+app.post('/upload-music', checkAuth, musicUpload.single('music'), async (req, res) => {
+  const { dreamId } = req.body;
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  if (!dreamId) {
+    return res.status(400).json({ message: 'No dreamId provided' });
+  }
+
+  const check = await pool.query(
+    'SELECT id FROM music WHERE dream_id = $1',
+    [dreamId]
+  );
+  if (check.rows.length > 0) {
+    return res.status(400).json({ message: 'Music already exists for this dream' });
+  }
+
+  const url = `/music_uploads/${req.file.filename}`;
+  await pool.query(
+    'INSERT INTO music (dream_id, url) VALUES ($1, $2)',
+    [dreamId, url]
+  );
+
+  res.json({ url });
+});
+
+app.delete('/music/:dreamId', checkAuth, async (req, res) => {
+  const { dreamId } = req.params;
+  try {
+    const result = await pool.query(
+      'SELECT url FROM music WHERE dream_id = $1',
+      [dreamId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No music found for this dream' });
+    }
+    const url = result.rows[0].url;
+
+    await pool.query(
+      'DELETE FROM music WHERE dream_id = $1',
+      [dreamId]
+    );
+
+    const fs = require('fs');
+    const filePath = url.startsWith('/') ? url.slice(1) : url;
+    fs.unlink(filePath, (err) => {
+    });
+
+    res.json({ message: 'Music deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

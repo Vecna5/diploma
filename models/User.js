@@ -16,6 +16,13 @@ const UserModel = {
     return result.rows[0];
   },
 
+async expiredUpdate(id) {
+  await db.query(
+    'UPDATE users SET is_online = false WHERE id = $1',
+    [id]
+  );
+},
+
  async GetTop() {
     const result = await db.query(
       `SELECT u.id, u.username, COALESCE(SUM(d.likes), 0) AS total_likes
