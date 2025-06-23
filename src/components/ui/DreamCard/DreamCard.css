@@ -9,6 +9,7 @@
   flex-direction: column;
   align-items: center;
   padding: 87px;
+  scrollbar-width: none;
 }
 
 .dream-cards-row {
@@ -73,10 +74,55 @@ font-family: "Raleway", sans-serif;
   height: 800px;
   align-items: center;
 }
+
+.create-link {
+  color: none;
+  text-decoration: none;
+  font-size: 20px;
+  font-family: 'Raleway', sans-serif;
+  margin-top: 20px;
+  background-color: none;
+}
 .dream-mood-date {
   display: flex;
   justify-content: space-between;
   font-size: 18px;
+}
+
+.dream-card-top-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 38px; /* высота панельки */
+  background: rgba(34, 151, 153, 0.95);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+  border-top-left-radius: 55px;
+  border-top-right-radius: 55px;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.25s, opacity 0.25s;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.dream-card:hover .dream-card-top-panel {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #f5f5f5;
+  font-size: 24px;
+  cursor: pointer;
+  align-items: center;
 }
 
 .dream-tags {
@@ -143,12 +189,26 @@ font-family: "Raleway", sans-serif;
 }
 
 .add-card .plus {
+  text-decoration: none;
   color: #f5f5f5;
   font-size: 64px;
   line-height: 1;
   font-weight: 300;
   user-select: none;
   transition: color 0.2s;
+  background: none;
+  border: none;
+}
+
+.plus {
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  border: none;
 }
 
 .add-card:hover .plus {

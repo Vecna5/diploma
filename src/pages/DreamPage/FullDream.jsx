@@ -10,13 +10,18 @@ import Online from '../../assets/icons/Online.svg';
 import image from '../../assets/icons/image.svg';
 import trash from '../../assets/icons/trash.svg';
 import './FullDream.css';
+import axios from '../../utils/axios';
 
 const FullDream = () => {
+  const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
   const dream = useSelector(state => state.posts.currentDream);
   const images = useSelector(state => state.posts.currentDreamImages);
+  const [music, setMusic] = useState([]);
+  const [audioUrl, setAudioUrl] = useState('');
+  const audioRef = useRef(null);
 
   const [editText, setEditText] = useState('');
   const [editTitle, setEditTitle] = useState('');
@@ -28,6 +33,7 @@ const FullDream = () => {
     Neutral: '#D8D7D7',
     Bad: '#9747FF'
   };
+  const uploadInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
@@ -39,6 +45,76 @@ const FullDream = () => {
   useEffect(() => {
     dispatch(fetchDreamById(id));
   }, [dispatch, id]);
+
+ useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const updateProgress = () => setProgress(audio.currentTime);
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('ended', () => setProgress(0));
+    return () => {
+      audio.removeEventListener('timeupdate', updateProgress);
+      audio.removeEventListener('ended', () => setProgress(0));
+    };
+  }, [audioUrl]);
+
+useEffect(() => {
+  const fetchMusic = async () => {
+    try {
+      const { data } = await axios.get(`/music/${id}`);
+      if (data.music && data.music.length > 0) {
+        setAudioUrl(
+          'http://localhost:5000' +
+          data.music[0].url.replace('/music_uploads/', '/music-uploads/')
+        );
+      } else {
+        setAudioUrl('');
+      }
+    } catch (e) {
+      setAudioUrl('');
+    }
+  };
+  fetchMusic();
+}, [id]);
+ const handleUploadMusic = () => {
+    if (uploadInputRef.current) {
+      uploadInputRef.current.value = '';
+      uploadInputRef.current.click();
+    }
+  };
+
+ const handleMusicFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('music', file);
+    formData.append('dreamId', id);
+    try {
+      await axios.post('/upload-music', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      window.location.reload();
+    } catch (err) {
+      alert('Ошибка при загрузке музыки');
+    }
+  };
+
+  const handleDeleteMusic = async () => {
+    try {
+      await axios.delete(`/music/${id}`);
+      setAudioUrl('');
+      setMusic([]);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    } catch (e) {
+      alert('Ошибка при удалении музыки');
+    }
+  };
 
   useEffect(() => {
     if (dream) {
@@ -148,9 +224,11 @@ const handleDeleteLastImage = () => {
     <div className="full-dream-root">
       <div className="full-dream-toolbar-grid">
         <div className="toolbar-cell toolbar-topleft">
-          <button className="toolbar-btn" onClick={() => navigate('/dreams')}>
+           <button className="toolbar-btn cross-btn" onClick={() => navigate('/dreams')}>
             <img src={cross} alt="Close" className="toolbar-icon" />
+             <div className="toolbar-divider-vertical" />
           </button>
+          <div className="toolbar-title">
           <button className="toolbar-btn" onClick={fetchImages}>
             <img className="image-icon" src={image} alt='icon' />
           </button>
@@ -171,6 +249,7 @@ const handleDeleteLastImage = () => {
               onChange={handleImageUpload}
             />
             <button className="delete-btn" onClick={handleDeleteLastImage}><img src={trash} alt="trash button"></img></button>
+            </div>
         </div>
         <div className="toolbar-cell toolbar-topright">
           <div className="toolbar-tags">
@@ -219,15 +298,39 @@ const handleDeleteLastImage = () => {
           </span>
         </div>
         <div className="toolbar-cell toolbar-bottomright">
-          <div className="toolbar-player">
-            <button className="toolbar-player-btn">&#9198;</button>
-            <button className="toolbar-player-btn">&#9654;</button>
-            <button className="toolbar-player-btn">&#9208;</button>
-            <input type="range" className="toolbar-player-range" />
-            <button className="toolbar-player-btn">+</button>
-            <button className="toolbar-player-btn toolbar-trash-btn">&#128465;</button>
-          </div>
+      <div className="toolbar-player">
+          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.currentTime > 5 ? (audioRef.current.currentTime -= 5) : null}>&#9198;</button>
+          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.play()}>&#9654;</button>
+          <button className="toolbar-player-btn" onClick={() => audioRef.current && audioRef.current.pause()}>&#9208;</button>
+          <input
+            type="range"
+            className="toolbar-player-range"
+            min={0}
+            max={audioRef.current && audioRef.current.duration ? audioRef.current.duration : 0}
+            value={progress}
+            readOnly
+          />
+ <button
+        className="toolbar-player-btn"
+        onClick={handleUploadMusic}
+      >
+        +
+      </button>
+       <input
+        type="file"
+        accept="audio/*"
+        style={{ display: 'none' }}
+        ref={uploadInputRef}
+        onChange={handleMusicFileChange}
+      />
+        <button className="toolbar-player-btn toolbar-trash-btn" onClick={handleDeleteMusic}>
+  <img src={trash} alt='trash_btn' />
+</button>
         </div>
+        {audioUrl && (
+          <audio ref={audioRef} src={audioUrl} preload="auto" />
+        )}
+      </div>
       </div>
       <div
         className={`full-dream-title${isEditingTitle ? ' editing' : ''}`}
@@ -270,17 +373,24 @@ const handleDeleteLastImage = () => {
             className="images-container"
             onClick={e => e.stopPropagation()}
           >
-            <div className="images-list">
-              {images.length === 0 && <div>You don't have images</div>}
-              {images.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={`http://localhost:5000${img.url}`}
-                  alt={`dream-img-${idx}`}
-                  style={{ width: 300, height: 300, objectFit: 'cover', borderRadius: 8 }}
-                />
-              ))}
-            </div>
+          <div className="images-list">
+  {images.length === 0 && <div>You don't have images</div>}
+  {images.map((img, idx) => (
+    <a
+      key={idx}
+      href={`http://localhost:5000${img.url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ display: 'inline-block' }}
+    >
+      <img
+        src={`http://localhost:5000${img.url}`}
+        alt={`dream-img-${idx}`}
+        style={{ width: 300, height: 300, objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
+      />
+    </a>
+  ))}
+</div>
           </div>
             <button className="images-close-btn" onClick={() => setShowImages(false)}>
               &gt;

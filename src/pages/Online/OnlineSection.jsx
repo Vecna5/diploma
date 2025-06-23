@@ -50,7 +50,7 @@ const OnlineSection = () => {
       const { data } = await axios.get('/dreams');
       setDreams(data.dream || []);
     } catch (e) {
-      alert('Ошибка при лайке');
+      alert('Like error');
     }
   }, []);
 
@@ -60,7 +60,7 @@ const OnlineSection = () => {
       const { data } = await axios.get('/dreams');
       setDreams(data.dream || []);
     } catch (e) {
-      alert('Ошибка при дизлайке');
+      alert('Dislike error');
     }
   }, []);
 
@@ -130,9 +130,6 @@ const OnlineSection = () => {
           <ul>
             <li>
               <Link to="/" className="sidebar-link">Main Page</Link>
-            </li>
-            <li>
-              <Link to="/online" className="sidebar-link">Online</Link>
             </li>
             <li>
               <Link to="/dreams" className="sidebar-link">My dreams</Link>

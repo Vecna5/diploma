@@ -355,7 +355,22 @@
 .toolbar-topleft {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
-  justify-content: flex-start;
+  justify-content: center;
+  position: absolute;
+}
+
+.toolbar-title{
+  gap: 25px;
+  display: flex;
+  flex-direction: row;
+}
+
+.toolbar-divider-vertical {
+  width: 2px;
+  height: 70px;
+  background: #f5f5f5;
+  margin: 0 38px;
+  border-radius: 2px;
 }
 
 .delete-btn {
@@ -370,10 +385,20 @@
   align-items: center;
 }
 
+.delete-btn:hover {
+  filter: brightness(0.8);
+}
+
 .toolbar-topright {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
   justify-content: center;
+}
+
+.cross-btn {
+  left: 35px;
+  top: 10px;
+  position: absolute;
 }
 
 .toolbar-bottomleft {

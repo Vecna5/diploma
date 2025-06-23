@@ -8,6 +8,9 @@ import dislikeIcon from '../../../assets/icons/dislike.svg';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPostsByUser } from '../../../redux/slices/posts';
+import { Link } from 'react-router-dom';
+import trash from '../../../assets/icons/trash.svg';
+import axios from '../../../utils/axios';
 
 const moodColors = {
   Positive: '#229799',
@@ -26,6 +29,16 @@ const DreamCard = ({ searchValue = '' }) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.data);
   const { items: dreams, status } = useSelector(state => state.posts);
+
+ const handleDeleteDream = async (dreamId, e) => {
+    e.stopPropagation(); 
+    try {
+      await axios.delete(`/dreams/${dreamId}`);
+      dispatch(fetchPostsByUser(user.id)); 
+    } catch (err) {
+      alert('Ошибка при удалении сна');
+    }
+  };
 
   useEffect(() => {
     if (user && user.id) {
@@ -54,6 +67,14 @@ const DreamCard = ({ searchValue = '' }) => {
             onClick={() => navigate(`/dreams/${dream.id}`)}
             style={{ cursor: 'pointer' }}
           >
+            <div className="dream-card-top-panel">
+              <button
+                className="delete-button"
+                onClick={e => handleDeleteDream(dream.id, e)}
+              >
+                <img src={trash} alt='trash-icon' />
+              </button>
+            </div>
             <div className="dream-content">
               <h3 className="dream-title">{dream.title}</h3>
               <hr className="dream-divider" />
@@ -92,8 +113,8 @@ const DreamCard = ({ searchValue = '' }) => {
             </div>
           </div>
         ))}
-        <div className="dream-card add-card">
-          <span className="plus">+</span>
+        <div className="dream-card add-card" >
+        <Link to="/create" className="plus">+</Link>
         </div>
       </div>
     </div>
